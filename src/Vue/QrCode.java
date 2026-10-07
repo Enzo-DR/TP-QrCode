@@ -162,5 +162,8 @@ public class QrCode extends JFrame {
     public void onChargerProfil(ActionListener action) {
         boutonChargerProfil.addActionListener(action);
     }
+
+
+
 }
 

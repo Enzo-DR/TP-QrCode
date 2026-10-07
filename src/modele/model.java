@@ -3,10 +3,13 @@ package modele;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.qrcode.QRCodeWriter;
+
 import com.itextpdf.io.image.ImageDataFactory;
+import com.itextpdf.kernel.colors.Color;
 import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
+
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
@@ -20,7 +23,6 @@ import java.util.List;
 
 public class model {
 
-
     public static final List<String> ALIGNEMENTS =
             Arrays.asList("Gauche", "Centre", "Droite");
 
@@ -29,7 +31,6 @@ public class model {
 
     public static final List<String> COULEURS =
             Arrays.asList("Noir", "Rouge", "Bleu");
-
 
     public String titre = "";
     public String texte = "";
@@ -53,14 +54,13 @@ public class model {
             throw new Exception("Saisissez un texte ou un lien.");
         }
 
-
+        // Création du QR code
         var matrice = new QRCodeWriter().encode(
                 contenu,
                 BarcodeFormat.QR_CODE,
                 300,
                 300
         );
-
 
         var baos = new ByteArrayOutputStream();
 
@@ -69,7 +69,8 @@ public class model {
 
         ImageIO.write(qrImage, "png", baos);
 
-        // Création du PDF
+
+
         try (var pdf = new PdfDocument(new PdfWriter(fichier));
              var doc = new Document(pdf)) {
 
@@ -77,7 +78,8 @@ public class model {
 
             Paragraph paragrapheTitre =
                     new Paragraph(titre)
-                            .setFontSize(20);
+                            .setFontSize(20)
+                            .setFontColor(getCouleur());
 
             if (gras) {
                 paragrapheTitre.setBold();
@@ -89,10 +91,12 @@ public class model {
 
 
 
+
             if (!texte.isBlank()) {
 
                 Paragraph paragrapheTexte =
                         new Paragraph(texte)
+                                .setFontColor(getCouleur())
                                 .setTextAlignment(getTextAlignment());
 
                 doc.add(paragrapheTexte);
@@ -100,34 +104,31 @@ public class model {
 
 
 
-            if (!lien.isBlank()) {
-
-                Paragraph paragrapheLien =
-                        new Paragraph(lien)
-                                .setTextAlignment(getTextAlignment());
-
-                doc.add(paragrapheLien);
-            }
-
-
-
             if (!image.isBlank()) {
 
                 try {
+
                     Image imagePdf =
-                            new Image(ImageDataFactory.create(image));
+                            new Image(
+                                    ImageDataFactory.create(image)
+                            );
 
                     imagePdf.scaleToFit(largeur, largeur);
 
                     doc.add(imagePdf);
 
                 } catch (Exception e) {
+
                     throw new Exception(
                             "Impossible de charger l'image : " + image
                     );
                 }
             }
 
+
+            // -------------------------
+            // QR CODE
+            // -------------------------
 
             Image qr =
                     new Image(
@@ -141,6 +142,25 @@ public class model {
             doc.add(qr);
         }
     }
+
+
+
+    private Color getCouleur() {
+
+        switch (couleur) {
+
+            case "Rouge":
+                return ColorConstants.RED;
+
+            case "Bleu":
+                return ColorConstants.BLUE;
+
+            case "Noir":
+            default:
+                return ColorConstants.BLACK;
+        }
+    }
+
 
 
     private TextAlignment getTextAlignment() {
@@ -159,4 +179,3 @@ public class model {
         }
     }
 }
-

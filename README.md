@@ -17,3 +17,10 @@ Travail demandé :
 2. Il clique sur « Créer le PDF avec QR code ».
 3. Le QR code contient le lien, ou le texte si aucun lien n'est saisi.
 4. Le fichier `resultat.pdf` est créé à la racine du projet.
+
+## 3.Suite de l'application
+
+1. Ajout de la modification de la police et de la couleur
+2. Ajout d'une image sur le fichier pdf
+3. Modification de la largeur et l'alignement de l'image
+4. Ajout du style de la police en gras si souhaiter
