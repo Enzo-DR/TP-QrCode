@@ -1,4 +1,3 @@
-
 package modele;
 
 import com.google.zxing.BarcodeFormat;
@@ -54,7 +53,7 @@ public class model {
             throw new Exception("Saisissez un texte ou un lien.");
         }
 
-        // Création du QR code
+
         var matrice = new QRCodeWriter().encode(
                 contenu,
                 BarcodeFormat.QR_CODE,
